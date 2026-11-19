@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SIRE - Sistema de Registro de Estudiantes (caso de estudio del taller)
+//
+// La identificación NO tiene restricción única en la base de datos: es lo que
+// permite a la v1.0 registrar duplicados de verdad (DEF01), igual que en la
+// ronda original de pruebas. La unicidad (RF03) se garantiza en la capa de
+// aplicación a partir de la v2.0 (ver src/app/api/estudiantes/route.ts).
+model Estudiante {
+  id             String   @id @default(cuid())
+  identificacion String
+  nombres        String
+  apellidos      String
+  correo         String
+  programa       String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
