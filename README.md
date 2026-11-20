@@ -3,7 +3,11 @@
 Prototipo funcional del taller **"Implementación del Plan de Pruebas de Software"** — Ingeniería de Software II. Incluye **dos versiones en una sola aplicación**, seleccionables desde el conmutador del encabezado:
 
 - **v1.0 · Original** — reproduce con fidelidad la versión evaluada en la primera ronda, con los 4 defectos reales: acepta identificaciones duplicadas y las persiste (DEF01), admite correos con formato inválido (DEF02), muestra un error 500 TypeError al consultar una identificación inexistente (DEF03) y permite guardar actualizaciones con campos vacíos perdiendo la información (DEF04).
+<<<<<<< HEAD
 - **v2.0 · Corregida** — la versión con las correcciones aplicadas, sobre la que se ejecutó la regresión completa (12/12 casos aprobados). Al activarla, la aplicación **depura automáticamente los duplicados** que dejó la v1.0 en la base de datos: se conserva el registro original de cada identificación y el listado queda limpio (corrección de DEF01, así se desbloqueó CP12 en la regresión).
+=======
+- **v2.0 · Corregida** — la versión con las correcciones aplicadas, sobre la que se ejecutó la regresión completa (12/12 casos aprobados).
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 
 Aplicación web con Next.js 16 + TypeScript + Prisma (SQLite) + Tailwind CSS 4 + shadcn/ui, con interfaz en español que cubre los requisitos RF01-RF07:
 

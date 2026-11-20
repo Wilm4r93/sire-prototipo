@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+```bash
+npx prisma generate
+```
+
+
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 # 🚀 Guía de instalación y ejecución de SIRE en Visual Studio Code
 
 **SIRE — Sistema de Registro de Estudiantes · Prototipo funcional conmutable: v1.0 (con defectos reales) / v2.0 (corregida)**
@@ -7,11 +15,19 @@ Taller: *Implementación del Plan de Pruebas de Software* — Ingeniería de Sof
 
 ## 📋 Requisitos previos
 
+<<<<<<< HEAD
 | Requisito | Versión mínima | Dónde conseguirlo |
 |---|---|---|
 | **Node.js** | 20.9 o superior (recomendado: **22 LTS**) | <https://nodejs.org> (instalar la versión **LTS**) |
 | **Visual Studio Code** | Cualquiera reciente | <https://code.visualstudio.com> |
 | Navegador moderno | Chrome, Edge o Firefox | — |
+=======
+| Requisito                    | Versión mínima                                | Dónde conseguirlo                                                           |
+| ---------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Node.js**            | 20.9 o superior (recomendado: **22 LTS**) | [https://nodejs.org](https://nodejs.org) (instalar la versión **LTS**) |
+| **Visual Studio Code** | Cualquiera reciente                             | [https://code.visualstudio.com](https://code.visualstudio.com)                |
+| Navegador moderno            | Chrome, Edge o Firefox                          | —                                                                           |
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 
 > ⚠️ **Importante:** Next.js 16 exige Node.js 20.9+. Si tienes una versión anterior, la app no arrancará.
 
@@ -75,10 +91,17 @@ npx prisma generate
 
 ### Comandos útiles de la base de datos (opcionales)
 
+<<<<<<< HEAD
 | Comando | Qué hace |
 |---|---|
 | `npm run db:setup` | Recrea el esquema y carga la semilla (3 estudiantes base) |
 | `npm run db:seed` | Solo carga la semilla (agrega los estudiantes base si faltan) |
+=======
+| Comando              | Qué hace                                                        |
+| -------------------- | ---------------------------------------------------------------- |
+| `npm run db:setup` | Recrea el esquema y carga la semilla (3 estudiantes base)        |
+| `npm run db:seed`  | Solo carga la semilla (agrega los estudiantes base si faltan)    |
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 | `npm run db:reset` | **Borra todo** y deja solo los 3 estudiantes de referencia |
 
 ---
@@ -94,7 +117,11 @@ npm run dev
    ✓ Ready in ...ms
    - Local: http://localhost:3000
    ```
+<<<<<<< HEAD
 2. Abre el navegador en **<http://localhost:3000>** (o mantén `Ctrl` y haz clic en el enlace de la terminal).
+=======
+2. Abre el navegador en **[http://localhost:3000](http://localhost:3000)** (o mantén `Ctrl` y haz clic en el enlace de la terminal).
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 3. Verás la interfaz de SIRE con 4 pestañas (**Registrar**, **Consultar**, **Actualizar**, **Listado**) y, en la parte superior, el **conmutador de versión**:
    - **`v1.0 · Original`** (ámbar, seleccionada por defecto) — versión con los defectos DEF01-DEF04.
    - **`v2.0 · Corregida`** (verde) — versión con las correcciones aplicadas.
@@ -111,6 +138,7 @@ La app arranca en **v1.0** para que puedas mostrar primero los defectos y luego,
 
 ### Guion de demostración (un defecto por vez)
 
+<<<<<<< HEAD
 | # | Defecto | Haz esto en **v1.0** | Lo que ves en v1.0 ❌ | Cambia a **v2.0** y repite |
 |---|---|---|---|---|
 | 1 | **DEF01** (Alta) · CP03 | Registrar con Id `102030` (ya existe, Laura Gómez), Pedro Sánchez, `pedro.sanchez@example.com`, Derecho | "Estudiante registrado correctamente…". En **Listado** quedan **dos filas** con 102030 | ❌ "ya existe un estudiante registrado con la identificación 102030". Además, al cambiar de versión el duplicado se **elimina automáticamente** y el Listado queda limpio |
@@ -136,6 +164,33 @@ La app arranca en **v1.0** para que puedas mostrar primero los defectos y luego,
 | **CP10** ❌ | Registrar | Id y nombre con solo espacios: `"   "` | Error: los campos no pueden contener solo espacios |
 | **CP11** ✅ | Todas | Ejecutar operaciones válidas e inválidas | Mensajes claros de confirmación y de error |
 | **CP12** ❌ | Actualizar | Id: `102030` tras crear el duplicado con la v1.0 | En v2.0 los duplicados se depuran al activar la versión (DEF01 corregido), así que la actualización es inequívoca |
+=======
+| # | Defecto                            | Haz esto en **v1.0**                                                                                    | Lo que ves en v1.0 ❌                                                                               | Cambia a **v2.0** y repite                                                                              |
+| - | ---------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 1 | **DEF01** (Alta) · CP03     | Registrar con Id `102030` (ya existe, Laura Gómez), Pedro Sánchez, `pedro.sanchez@example.com`, Derecho | "Estudiante registrado correctamente…". En **Listado** quedan **dos filas** con 102030 | ❌ "ya existe un estudiante registrado con la identificación 102030"                                         |
+| 2 | **DEF02** (Media) · CP04    | Registrar con Id `102035`, Ana Díaz, correo `ana.diazexample.com` (sin @)                                | Registro exitoso; el correo inválido queda almacenado                                              | ❌ "el correo electrónico … no tiene un formato válido"                                                    |
+| 3 | **DEF03** (Crítica) · CP07 | Consultar la Id `999999`                                                                                    | **Error 500 TypeError** con traza técnica, en tipografía de consola                         | ✅ Mensaje informativo "No se encontró ningún estudiante con la identificación 999999"                     |
+| 4 | **DEF04** (Alta) · CP09     | Actualizar: cargar Id `102032`, borrar Nombres y Correo → Guardar cambios                                  | "Información actualizada correctamente…" y **los datos se pierden** (Listado)               | ❌ "No se pudo actualizar la información: los siguientes campos son obligatorios…" y los datos se conservan |
+
+> 💡 **Recomendación para la demo:** ejecuta los 4 defectos en v1.0 y muestra el daño en **Listado** (duplicados, campos vacíos, correos inválidos). Luego pulsa `v2.0 · Corregida` y ejecuta la **regresión completa** (los 12 CP de la tabla siguiente) para demostrar que todo pasó. Si necesitas partir de cero entre tandas: `npm run db:reset`.
+
+### Los 12 casos de prueba en la v2.0 (regresión)
+
+| CP                | Pestaña   | Datos de entrada                                                                | Resultado esperado (v2.0)                                           |
+| ----------------- | ---------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| **CP01** ✅ | Registrar  | Id: `102034`, Daniela Ortega, `daniela.ortega@example.com`, Ing. Industrial | Mensaje verde "registrado correctamente" y aparece en Listado       |
+| **CP02** ❌ | Registrar  | Todos los campos vacíos → Registrar                                           | Mensaje de error: faltan campos obligatorios                        |
+| **CP03** ❌ | Registrar  | Id: `102030` (ya existe, Laura Gómez) con otros datos                        | Error: "ya existe un estudiante con la identificación 102030"      |
+| **CP04** ❌ | Registrar  | Id: `102035`, correo `ana.diazexample.com` (sin @)                          | Error: "el correo no tiene un formato válido"                      |
+| **CP05** ✅ | Registrar  | Id: `102036`, correo `ana+tag@correo.co.uk`                                 | Registro exitoso                                                    |
+| **CP06** ✅ | Consultar  | Id: `102030`                                                                  | Se muestran los datos de Laura Gómez                               |
+| **CP07** ❌ | Consultar  | Id: `999999` (no existe)                                                      | Mensaje informativo "No se encontró…" (**no** un error 500) |
+| **CP08** ✅ | Actualizar | Id: `102031` → cargar → cambiar programa a "Ingeniería Industrial"         | Actualización exitosa, el Listado refleja el cambio                |
+| **CP09** ❌ | Actualizar | Id: `102032` → cargar → borrar el nombre → Guardar                         | Error: los campos obligatorios no pueden quedar vacíos             |
+| **CP10** ❌ | Registrar  | Id y nombre con solo espacios: `"   "`                                        | Error: los campos no pueden contener solo espacios                  |
+| **CP11** ✅ | Todas      | Ejecutar operaciones válidas e inválidas                                      | Mensajes claros de confirmación y de error                         |
+| **CP12** ❌ | Actualizar | Id: `102030` tras crear el duplicado con la v1.0                              | En v2.0 no se pueden crear duplicados (DEF01 corregido)             |
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 
 > 💡 Si ejecutaste CP01 con el id 102034 y quieres repetir la ronda completa desde cero, usa antes `npm run db:reset`.
 
@@ -143,6 +198,7 @@ La app arranca en **v1.0** para que puedas mostrar primero los defectos y luego,
 
 Para mostrar **qué se cambió** entre versiones, abre estos archivos en VS Code — cada corrección está marcada con comentarios `v1.0 — DEF0X` y `v2.0 — corrección`:
 
+<<<<<<< HEAD
 | Defecto | Archivo con la corrección | Cambio implementado |
 |---|---|---|
 | DEF01 (duplicados) | `src/app/api/estudiantes/route.ts` | La v2.0 verifica con `findFirst` que la identificación no exista antes de registrar (RF03) |
@@ -152,15 +208,32 @@ Para mostrar **qué se cambió** entre versiones, abre estos archivos en VS Code
 | DEF04 (campos vacíos) | `src/app/api/estudiantes/[identificacion]/route.ts` | La v2.0 valida los campos obligatorios antes de actualizar y conserva los datos (RF06) |
 
 El conmutador funciona con la cabecera HTTP `x-sire-version` que la interfaz envía en cada petición (`src/app/page.tsx`), y las rutas deciden el comportamiento con `src/lib/version.ts`. Al pasar a la v2.0, la interfaz llama además a `POST /api/estudiantes/depurar`, que elimina los duplicados heredados de la v1.0 conservando el registro original. En `prisma/schema.prisma` la identificación no tiene restricción única a propósito: la unicidad se garantiza en la capa de aplicación, que es la corrección documentada, y así la v1.0 puede duplicar de verdad como en la ronda original.
+=======
+| Defecto                  | Archivo con la corrección                            | Cambio implementado                                                                           |
+| ------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| DEF01 (duplicados)       | `src/app/api/estudiantes/route.ts`                  | La v2.0 verifica con `findFirst` que la identificación no exista antes de registrar (RF03) |
+| DEF02 (correo inválido) | `src/lib/validaciones.ts`                           | La expresión regular `EXPRESION_CORREO` valida el formato texto@dominio.ext (RF04)         |
+| DEF03 (error 500)        | `src/app/api/estudiantes/[identificacion]/route.ts` | La v2.0 responde 404 con mensaje informativo en lugar de dejar escapar el error (RF05/RF07)   |
+| DEF04 (campos vacíos)   | `src/app/api/estudiantes/[identificacion]/route.ts` | La v2.0 valida los campos obligatorios antes de actualizar y conserva los datos (RF06)        |
+
+El conmutador funciona con la cabecera HTTP `x-sire-version` que la interfaz envía en cada petición (`src/app/page.tsx`), y las rutas deciden el comportamiento con `src/lib/version.ts`. En `prisma/schema.prisma` la identificación no tiene restricción única a propósito: la unicidad se garantiza en la capa de aplicación, que es la corrección documentada, y así la v1.0 puede duplicar de verdad como en la ronda original.
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 
 ### 🐞 Mockups estáticos de la versión 1.0 (alternativa)
 
 El paquete también incluye las 4 simulaciones HTML de la v1.0 (útiles como captura congelada, sin necesidad de ejecutar los defectos en vivo):
 
+<<<<<<< HEAD
 - <http://localhost:3000/mockups-v1/def01_identificacion_duplicada.html> — DEF01 (Alta)
 - <http://localhost:3000/mockups-v1/def02_correo_invalido_aceptado.html> — DEF02 (Media)
 - <http://localhost:3000/mockups-v1/def03_error_consulta_inexistente.html> — DEF03 (Crítica)
 - <http://localhost:3000/mockups-v1/def04_actualizacion_campos_vacios.html> — DEF04 (Alta)
+=======
+- [http://localhost:3000/mockups-v1/def01_identificacion_duplicada.html](http://localhost:3000/mockups-v1/def01_identificacion_duplicada.html) — DEF01 (Alta)
+- [http://localhost:3000/mockups-v1/def02_correo_invalido_aceptado.html](http://localhost:3000/mockups-v1/def02_correo_invalido_aceptado.html) — DEF02 (Media)
+- [http://localhost:3000/mockups-v1/def03_error_consulta_inexistente.html](http://localhost:3000/mockups-v1/def03_error_consulta_inexistente.html) — DEF03 (Crítica)
+- [http://localhost:3000/mockups-v1/def04_actualizacion_campos_vacios.html](http://localhost:3000/mockups-v1/def04_actualizacion_campos_vacios.html) — DEF04 (Alta)
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 
 También puedes abrirlos directamente con doble clic desde la carpeta `public/mockups-v1/`.
 
@@ -168,6 +241,7 @@ También puedes abrirlos directamente con doble clic desde la carpeta `public/mo
 
 ## 🔧 Solución de problemas
 
+<<<<<<< HEAD
 | Problema | Solución |
 |---|---|
 | `next: command not found` o error raro al arrancar | Ejecuta de nuevo `npm install` y luego `npx prisma generate` |
@@ -177,6 +251,17 @@ También puedes abrirlos directamente con doble clic desde la carpeta `public/mo
 | La página abre pero sin estilos | Detén (`Ctrl+C`), borra la carpeta `.next` y vuelve a ejecutar `npm run dev` |
 | Quiero partir de cero la base de datos | `npm run db:reset` |
 | Cambios en la DB no se reflejan | Detén el servidor, ejecuta `npm run db:reset` y arranca de nuevo |
+=======
+| Problema                                             | Solución                                                                           |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `next: command not found` o error raro al arrancar | Ejecuta de nuevo `npm install` y luego `npx prisma generate`                    |
+| `Error: @prisma/client did not initialize yet`     | Ejecuta `npx prisma generate` y reinicia con `npm run dev`                      |
+| **Puerto 3000 ocupado** (`EADDRINUSE`)       | Cierra la otra app, o arranca en otro puerto: `npx next dev -p 3001`              |
+| `You are using Node.js XX.x` (versión vieja)      | Actualiza Node.js a la 22 LTS desde [https://nodejs.org](https://nodejs.org)         |
+| La página abre pero sin estilos                     | Detén (`Ctrl+C`), borra la carpeta `.next` y vuelve a ejecutar `npm run dev` |
+| Quiero partir de cero la base de datos               | `npm run db:reset`                                                                |
+| Cambios en la DB no se reflejan                      | Detén el servidor, ejecuta `npm run db:reset` y arranca de nuevo                 |
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 
 ---
 
@@ -197,7 +282,11 @@ sire-prototipo/
 │   │   ├── page.tsx           ← Interfaz SIRE (4 pestañas)
 │   │   ├── layout.tsx         ← Diseño global
 │   │   ├── globals.css        ← Estilos (Tailwind CSS 4)
+<<<<<<< HEAD
 │   │   └── api/estudiantes/   ← API REST (GET/POST lista, GET/PUT por id, POST depurar)
+=======
+│   │   └── api/estudiantes/   ← API REST (GET/POST lista, GET/PUT por id)
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 │   ├── components/ui/         ← Componentes de interfaz (shadcn/ui)
 │   └── lib/
 │       ├── db.ts              ← Cliente Prisma
@@ -212,6 +301,7 @@ sire-prototipo/
 
 ## 📜 Comandos disponibles
 
+<<<<<<< HEAD
 | Comando | Descripción |
 |---|---|
 | `npm run dev` | Servidor de desarrollo en <http://localhost:3000> |
@@ -220,6 +310,16 @@ sire-prototipo/
 | `npm run lint` | Revisa la calidad del código |
 | `npm run db:setup` | Crea el esquema + datos semilla |
 | `npm run db:reset` | Restablece la DB a los 3 estudiantes base |
+=======
+| Comando              | Descripción                                                            |
+| -------------------- | ----------------------------------------------------------------------- |
+| `npm run dev`      | Servidor de desarrollo en [http://localhost:3000](http://localhost:3000) |
+| `npm run build`    | Compila para producción                                                |
+| `npm run start`    | Ejecuta la versión compilada (requiere `build` antes)                |
+| `npm run lint`     | Revisa la calidad del código                                           |
+| `npm run db:setup` | Crea el esquema + datos semilla                                         |
+| `npm run db:reset` | Restablece la DB a los 3 estudiantes base                               |
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 
 ---
 

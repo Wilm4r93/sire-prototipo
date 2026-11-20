@@ -58,7 +58,10 @@ interface RespuestaAPI {
   estudiante?: Estudiante
   estudiantes?: Estudiante[]
   total?: number
+<<<<<<< HEAD
   eliminados?: number
+=======
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
 }
 
 const PROGRAMAS = [
@@ -184,9 +187,12 @@ export default function PaginaSIRE() {
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([])
   const [cargandoLista, setCargandoLista] = useState(false)
 
+<<<<<<< HEAD
   // ----- Depuración de duplicados al activar la v2.0 -----
   const [avisoDepuracion, setAvisoDepuracion] = useState('')
 
+=======
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
   /** Cabeceras comunes: cada petición informa a la API la versión activa. */
   const cabeceras = useCallback(
     (extra: Record<string, string> = {}) => ({
@@ -197,13 +203,18 @@ export default function PaginaSIRE() {
   )
 
   /** Cambia de versión y limpia los mensajes de la versión anterior. */
+<<<<<<< HEAD
   async function cambiarVersion(v: '1.0' | '2.0') {
+=======
+  function cambiarVersion(v: '1.0' | '2.0') {
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
     if (v === version) return
     setVersion(v)
     setMensajeRegistro({ tipo: undefined, texto: '' })
     setMensajeConsulta({ tipo: undefined, texto: '' })
     setMensajeActualizacion({ tipo: undefined, texto: '' })
     setEstudianteConsultado(null)
+<<<<<<< HEAD
     setAvisoDepuracion('')
 
     // Al activarse, la v2.0 depura la base de datos de los duplicados que
@@ -226,6 +237,8 @@ export default function PaginaSIRE() {
     }
 
     // La lista se recarga después de la depuración para no mostrar datos viejos.
+=======
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
     void cargarLista()
   }
 
@@ -437,6 +450,7 @@ export default function PaginaSIRE() {
               Los defectos DEF01-DEF04 fueron corregidos: identificación única (RF03),
               validación del formato del correo (RF04), mensaje informativo al consultar una
               identificación inexistente (RF05/RF07) y validación de campos obligatorios en la
+<<<<<<< HEAD
               actualización (RF06). Al activarse, esta versión también depura automáticamente
               los duplicados que dejó la v1.0 en la base de datos. Ejecute los mismos casos de
               prueba que en la v1.0 para comparar los resultados.
@@ -457,6 +471,10 @@ export default function PaginaSIRE() {
               {avisoDepuracion} El listado queda sin identificaciones repetidas y las
               actualizaciones vuelven a ser inequívocas: así se desbloqueó el caso CP12 en la
               regresión de la v2.0.
+=======
+              actualización (RF06). Ejecute los mismos casos de prueba que en la v1.0 para
+              comparar los resultados.
+>>>>>>> 1c38192c68245ab3f1787a4daf7a37b418f27ae0
             </p>
           </div>
         )}
