@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import {
   Table,
@@ -39,6 +38,7 @@ import {
   CheckCircle2,
   XCircle,
   Loader2,
+  AlertTriangle,
 } from 'lucide-react'
 
 interface Estudiante {
@@ -58,6 +58,7 @@ interface RespuestaAPI {
   estudiante?: Estudiante
   estudiantes?: Estudiante[]
   total?: number
+  eliminados?: number
 }
 
 const PROGRAMAS = [
@@ -76,6 +77,9 @@ type TipoMensaje = 'exito' | 'error' | undefined
 function Mensaje({ tipo, texto }: { tipo: TipoMensaje; texto: string }) {
   if (!tipo || !texto) return null
   const esExito = tipo === 'exito'
+  // La v1.0 deja escapar errores técnicos al usuario (DEF03):
+  // se muestran con formato de consola, como en la ronda original.
+  const esTecnico = texto.includes('TypeError')
   return (
     <div
       role="status"
@@ -92,7 +96,15 @@ function Mensaje({ tipo, texto }: { tipo: TipoMensaje; texto: string }) {
         ) : (
           <XCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
         )}
-        <span>{texto}</span>
+        <span
+          className={
+            esTecnico
+              ? 'whitespace-pre-wrap break-words font-mono text-xs font-normal leading-relaxed'
+              : undefined
+          }
+        >
+          {texto}
+        </span>
       </div>
     </div>
   )
@@ -131,6 +143,10 @@ function CampoTexto({
 export default function PaginaSIRE() {
   const [pestana, setPestana] = useState('registro')
 
+  // ----- Versión activa: v1.0 (original con defectos) / v2.0 (corregida) -----
+  const [version, setVersion] = useState<'1.0' | '2.0'>('1.0')
+  const esV1 = version === '1.0'
+
   // ----- Registro -----
   const [registro, setRegistro] = useState({
     identificacion: '',
@@ -168,10 +184,55 @@ export default function PaginaSIRE() {
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([])
   const [cargandoLista, setCargandoLista] = useState(false)
 
+  // ----- Depuración de duplicados al activar la v2.0 -----
+  const [avisoDepuracion, setAvisoDepuracion] = useState('')
+
+  /** Cabeceras comunes: cada petición informa a la API la versión activa. */
+  const cabeceras = useCallback(
+    (extra: Record<string, string> = {}) => ({
+      'x-sire-version': version,
+      ...extra,
+    }),
+    [version],
+  )
+
+  /** Cambia de versión y limpia los mensajes de la versión anterior. */
+  async function cambiarVersion(v: '1.0' | '2.0') {
+    if (v === version) return
+    setVersion(v)
+    setMensajeRegistro({ tipo: undefined, texto: '' })
+    setMensajeConsulta({ tipo: undefined, texto: '' })
+    setMensajeActualizacion({ tipo: undefined, texto: '' })
+    setEstudianteConsultado(null)
+    setAvisoDepuracion('')
+
+    // Al activarse, la v2.0 depura la base de datos de los duplicados que
+    // dejó registrar la v1.0 (corrección de DEF01): se conserva el registro
+    // original y se eliminan las copias, igual que en la regresión del taller.
+    if (v === '2.0') {
+      try {
+        const res = await fetch('/api/estudiantes/depurar', {
+          method: 'POST',
+          headers: { 'x-sire-version': '2.0' },
+        })
+        const data: RespuestaAPI = await res.json()
+        if (data.ok && (data.eliminados ?? 0) > 0) {
+          setAvisoDepuracion(data.mensaje)
+          setPestana('listado')
+        }
+      } catch {
+        // Silencioso: el listado se recarga de todos modos.
+      }
+    }
+
+    // La lista se recarga después de la depuración para no mostrar datos viejos.
+    void cargarLista()
+  }
+
   const cargarLista = useCallback(async () => {
     setCargandoLista(true)
     try {
-      const res = await fetch('/api/estudiantes')
+      const res = await fetch('/api/estudiantes', { headers: cabeceras() })
       const data: RespuestaAPI = await res.json()
       if (data.ok && data.estudiantes) setEstudiantes(data.estudiantes)
     } catch {
@@ -179,7 +240,7 @@ export default function PaginaSIRE() {
     } finally {
       setCargandoLista(false)
     }
-  }, [])
+  }, [cabeceras])
 
   useEffect(() => {
     void cargarLista()
@@ -194,7 +255,7 @@ export default function PaginaSIRE() {
     try {
       const res = await fetch('/api/estudiantes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: cabeceras({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(registro),
       })
       const data: RespuestaAPI = await res.json()
@@ -221,7 +282,9 @@ export default function PaginaSIRE() {
     setEstudianteConsultado(null)
     setMensajeConsulta({ tipo: undefined, texto: '' })
     try {
-      const res = await fetch(`/api/estudiantes/${encodeURIComponent(idConsulta.trim())}`)
+      const res = await fetch(`/api/estudiantes/${encodeURIComponent(idConsulta.trim())}`, {
+        headers: cabeceras(),
+      })
       const data: RespuestaAPI = await res.json()
       if (data.ok && data.estudiante) {
         setEstudianteConsultado(data.estudiante)
@@ -245,7 +308,9 @@ export default function PaginaSIRE() {
     setActualizacion(null)
     setMensajeActualizacion({ tipo: undefined, texto: '' })
     try {
-      const res = await fetch(`/api/estudiantes/${encodeURIComponent(idActualizar.trim())}`)
+      const res = await fetch(`/api/estudiantes/${encodeURIComponent(idActualizar.trim())}`, {
+        headers: cabeceras(),
+      })
       const data: RespuestaAPI = await res.json()
       if (data.ok && data.estudiante) {
         setActualizacion(data.estudiante)
@@ -271,7 +336,7 @@ export default function PaginaSIRE() {
     try {
       const res = await fetch(`/api/estudiantes/${encodeURIComponent(actualizacion.identificacion)}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: cabeceras({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           nombres: actualizacion.nombres,
           apellidos: actualizacion.apellidos,
@@ -314,13 +379,87 @@ export default function PaginaSIRE() {
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="border-emerald-300 bg-emerald-50 text-emerald-700">
-            Versión 2.0
-          </Badge>
+          <div
+            role="group"
+            aria-label="Seleccionar versión de la aplicación"
+            className="flex items-center gap-0.5 self-center rounded-lg border bg-muted p-0.5"
+          >
+            <button
+              type="button"
+              onClick={() => cambiarVersion('1.0')}
+              aria-pressed={esV1}
+              className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+                esV1
+                  ? 'bg-amber-500 text-white shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              v1.0 · Original
+            </button>
+            <button
+              type="button"
+              onClick={() => cambiarVersion('2.0')}
+              aria-pressed={!esV1}
+              className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+                !esV1
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              v2.0 · Corregida
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+        {esV1 ? (
+          <div className="mb-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+            <p className="flex items-center gap-2 font-semibold">
+              <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
+              Versión 1.0 — original con defectos (ronda 1 del plan de pruebas)
+            </p>
+            <p className="mt-1.5 leading-relaxed">
+              Esta versión reproduce el comportamiento original evaluado en la primera ronda:
+              acepta identificaciones duplicadas (DEF01), admite correos con formato inválido
+              (DEF02), muestra un error interno al consultar una identificación inexistente
+              (DEF03) y permite guardar actualizaciones con campos vacíos (DEF04). Cambie a la
+              v2.0 para comparar el comportamiento corregido.
+            </p>
+          </div>
+        ) : (
+          <div className="mb-5 rounded-lg border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-900">
+            <p className="flex items-center gap-2 font-semibold">
+              <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+              Versión 2.0 — corregida tras el registro de defectos
+            </p>
+            <p className="mt-1.5 leading-relaxed">
+              Los defectos DEF01-DEF04 fueron corregidos: identificación única (RF03),
+              validación del formato del correo (RF04), mensaje informativo al consultar una
+              identificación inexistente (RF05/RF07) y validación de campos obligatorios en la
+              actualización (RF06). Al activarse, esta versión también depura automáticamente
+              los duplicados que dejó la v1.0 en la base de datos. Ejecute los mismos casos de
+              prueba que en la v1.0 para comparar los resultados.
+            </p>
+          </div>
+        )}
+        {!esV1 && avisoDepuracion && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="mb-5 rounded-lg border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-900"
+          >
+            <p className="flex items-center gap-2 font-semibold">
+              <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+              Base de datos depurada (corrección de DEF01)
+            </p>
+            <p className="mt-1.5 leading-relaxed">
+              {avisoDepuracion} El listado queda sin identificaciones repetidas y las
+              actualizaciones vuelven a ser inequívocas: así se desbloqueó el caso CP12 en la
+              regresión de la v2.0.
+            </p>
+          </div>
+        )}
         <Tabs value={pestana} onValueChange={setPestana} className="gap-5">
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
             <TabsTrigger value="registro" className="gap-2">
@@ -347,8 +486,9 @@ export default function PaginaSIRE() {
               <CardHeader>
                 <CardTitle>Registro de estudiantes</CardTitle>
                 <CardDescription>
-                  Ingrese la información del estudiante. El sistema valida los campos
-                  obligatorios, la identificación única y el formato del correo electrónico.
+                  {esV1
+                    ? 'Ingrese la información del estudiante. La versión 1.0 solo exige los campos obligatorios: no valida identificaciones duplicadas (DEF01) ni el formato del correo electrónico (DEF02).'
+                    : 'Ingrese la información del estudiante. El sistema valida los campos obligatorios, la identificación única y el formato del correo electrónico.'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -680,8 +820,8 @@ export default function PaginaSIRE() {
 
       <footer className="mt-auto border-t bg-white">
         <div className="mx-auto max-w-5xl px-4 py-4 text-center text-xs text-muted-foreground">
-          SIRE v2.0 — Prototipo académico · Taller: Implementación del Plan de Pruebas de Software ·
-          Ingeniería de Software II
+          SIRE {esV1 ? 'v1.0 (original con defectos)' : 'v2.0 (corregida)'} — Prototipo académico ·
+          Taller: Implementación del Plan de Pruebas de Software · Ingeniería de Software II
         </div>
       </footer>
     </div>

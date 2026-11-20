@@ -1,6 +1,9 @@
-# SIRE — Sistema de Registro de Estudiantes (v2.0)
+# SIRE — Sistema de Registro de Estudiantes (v1.0 / v2.0 conmutables)
 
-Prototipo funcional **sin defectos** del taller **"Implementación del Plan de Pruebas de Software"** — Ingeniería de Software II.
+Prototipo funcional del taller **"Implementación del Plan de Pruebas de Software"** — Ingeniería de Software II. Incluye **dos versiones en una sola aplicación**, seleccionables desde el conmutador del encabezado:
+
+- **v1.0 · Original** — reproduce con fidelidad la versión evaluada en la primera ronda, con los 4 defectos reales: acepta identificaciones duplicadas y las persiste (DEF01), admite correos con formato inválido (DEF02), muestra un error 500 TypeError al consultar una identificación inexistente (DEF03) y permite guardar actualizaciones con campos vacíos perdiendo la información (DEF04).
+- **v2.0 · Corregida** — la versión con las correcciones aplicadas, sobre la que se ejecutó la regresión completa (12/12 casos aprobados). Al activarla, la aplicación **depura automáticamente los duplicados** que dejó la v1.0 en la base de datos: se conserva el registro original de cada identificación y el listado queda limpio (corrección de DEF01, así se desbloqueó CP12 en la regresión).
 
 Aplicación web con Next.js 16 + TypeScript + Prisma (SQLite) + Tailwind CSS 4 + shadcn/ui, con interfaz en español que cubre los requisitos RF01-RF07:
 
@@ -17,7 +20,9 @@ npx prisma generate  # compilar el cliente de base de datos
 npm run dev          # arrancar en http://localhost:3000
 ```
 
-> 📘 La guía completa paso a paso para Visual Studio Code está en **[GUIA_VSCODE.md](./GUIA_VSCODE.md)**.
+La app arranca en **v1.0**; usa el conmutador del encabezado para pasar a la **v2.0** y comparar el comportamiento con los mismos casos de prueba.
+
+> 📘 La guía completa paso a paso para Visual Studio Code (incluido el guion de demostración defecto por defecto) está en **[GUIA_VSCODE.md](./GUIA_VSCODE.md)**.
 
 ## Requisitos
 
@@ -28,5 +33,6 @@ npm run dev          # arrancar en http://localhost:3000
 
 | Versión | Estado | Dónde verla |
 |---|---|---|
-| v1.0 | Con 4 defectos (DEF01-DEF04) | Mockups HTML en `public/mockups-v1/` |
-| **v2.0** | **Corregida — 12/12 casos de prueba aprobados** | Esta aplicación |
+| v1.0 | Con 4 defectos (DEF01-DEF04) implementados de verdad | Conmutador **v1.0 · Original** de esta aplicación |
+| **v2.0** | **Corregida — 12/12 casos de prueba aprobados** | Conmutador **v2.0 · Corregida** de esta aplicación |
+| — | Evidencia estática adicional | Mockups HTML en `public/mockups-v1/` |

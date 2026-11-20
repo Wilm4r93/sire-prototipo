@@ -20,14 +20,14 @@ export interface ResultadoValidacion {
 }
 
 /**
- * RF02 - Validación de campos obligatorios:
- * el sistema no debe permitir registrar estudiantes cuando falten datos obligatorios.
- * RF04 - Validación del correo electrónico: debe tener un formato válido.
+ * RF02 - Campos obligatorios: devuelve la lista de los que faltan.
+ * La v1.0 original solo realizaba esta verificación (sin validar unicidad
+ * ni formato de correo); se expone por separado para reproducir ese comportamiento.
  */
-export function validarDatosEstudiante(
+export function camposObligatoriosFaltantes(
   datos: DatosEstudiante,
   opciones: { ignorarIdentificacion?: boolean } = {},
-): ResultadoValidacion {
+): string[] {
   const faltantes: string[] = []
 
   if (!opciones.ignorarIdentificacion && !datos.identificacion) {
@@ -37,6 +37,20 @@ export function validarDatosEstudiante(
   if (!datos.apellidos) faltantes.push('Apellidos')
   if (!datos.correo) faltantes.push('Correo electrónico')
   if (!datos.programa) faltantes.push('Programa académico')
+
+  return faltantes
+}
+
+/**
+ * RF02 - Validación de campos obligatorios:
+ * el sistema no debe permitir registrar estudiantes cuando falten datos obligatorios.
+ * RF04 - Validación del correo electrónico: debe tener un formato válido.
+ */
+export function validarDatosEstudiante(
+  datos: DatosEstudiante,
+  opciones: { ignorarIdentificacion?: boolean } = {},
+): ResultadoValidacion {
+  const faltantes = camposObligatoriosFaltantes(datos, opciones)
 
   if (faltantes.length > 0) {
     return {

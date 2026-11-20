@@ -1,6 +1,6 @@
 # 🚀 Guía de instalación y ejecución de SIRE en Visual Studio Code
 
-**SIRE — Sistema de Registro de Estudiantes · Prototipo funcional v2.0 (sin defectos)**
+**SIRE — Sistema de Registro de Estudiantes · Prototipo funcional conmutable: v1.0 (con defectos reales) / v2.0 (corregida)**
 Taller: *Implementación del Plan de Pruebas de Software* — Ingeniería de Software II
 
 ---
@@ -71,7 +71,7 @@ npx prisma generate
 
 ✅ Debe mostrar: `✔ Generated Prisma Client to ./node_modules/@prisma/client`
 
-> 💡 La base de datos **ya viene creada y con datos** (`db/custom.db`, con los estudiantes 102030-102034) para que puedas ejecutar los casos de prueba de inmediato. Este paso solo compila el código de acceso a datos.
+> 💡 La base de datos **ya viene creada y con datos** (`db/custom.db`, con los 3 estudiantes base 102030-102032) para que puedas ejecutar los casos de prueba de inmediato. Este paso solo compila el código de acceso a datos.
 
 ### Comandos útiles de la base de datos (opcionales)
 
@@ -95,20 +95,36 @@ npm run dev
    - Local: http://localhost:3000
    ```
 2. Abre el navegador en **<http://localhost:3000>** (o mantén `Ctrl` y haz clic en el enlace de la terminal).
-3. Verás la interfaz de SIRE con 4 pestañas: **Registrar**, **Consultar**, **Actualizar** y **Listado**.
+3. Verás la interfaz de SIRE con 4 pestañas (**Registrar**, **Consultar**, **Actualizar**, **Listado**) y, en la parte superior, el **conmutador de versión**:
+   - **`v1.0 · Original`** (ámbar, seleccionada por defecto) — versión con los defectos DEF01-DEF04.
+   - **`v2.0 · Corregida`** (verde) — versión con las correcciones aplicadas.
+   - Bajo el encabezado, un banner describe los defectos presentes (v1.0) o las correcciones aplicadas (v2.0).
 
 > Para detener el servidor: haz clic en la terminal y presiona **`Ctrl + C`**.
 > Para volver a arrancarlo más tarde: `npm run dev` de nuevo.
 
 ---
 
-## 🧪 Paso 5 · Ejecutar los casos de prueba (demo del taller)
+## 🧪 Paso 5 · Demo del taller: v1.0 (defectos) → v2.0 (correcciones)
 
-Estos son los 12 casos de la matriz (`02_Matriz_Casos_de_Prueba.xlsx`), con los datos exactos para reproducirlos en la app v2.0:
+La app arranca en **v1.0** para que puedas mostrar primero los defectos y luego, con el mismo caso de prueba, la versión corregida: reproduce el caso en v1.0, pulsa **`v2.0 · Corregida`** en el encabezado y repite exactamente la misma operación.
+
+### Guion de demostración (un defecto por vez)
+
+| # | Defecto | Haz esto en **v1.0** | Lo que ves en v1.0 ❌ | Cambia a **v2.0** y repite |
+|---|---|---|---|---|
+| 1 | **DEF01** (Alta) · CP03 | Registrar con Id `102030` (ya existe, Laura Gómez), Pedro Sánchez, `pedro.sanchez@example.com`, Derecho | "Estudiante registrado correctamente…". En **Listado** quedan **dos filas** con 102030 | ❌ "ya existe un estudiante registrado con la identificación 102030". Además, al cambiar de versión el duplicado se **elimina automáticamente** y el Listado queda limpio |
+| 2 | **DEF02** (Media) · CP04 | Registrar con Id `102035`, Ana Díaz, correo `ana.diazexample.com` (sin @) | Registro exitoso; el correo inválido queda almacenado | ❌ "el correo electrónico … no tiene un formato válido" |
+| 3 | **DEF03** (Crítica) · CP07 | Consultar la Id `999999` | **Error 500 TypeError** con traza técnica, en tipografía de consola | ✅ Mensaje informativo "No se encontró ningún estudiante con la identificación 999999" |
+| 4 | **DEF04** (Alta) · CP09 | Actualizar: cargar Id `102032`, borrar Nombres y Correo → Guardar cambios | "Información actualizada correctamente…" y **los datos se pierden** (Listado) | ❌ "No se pudo actualizar la información: los siguientes campos son obligatorios…" y los datos se conservan |
+
+> 💡 **Recomendación para la demo:** ejecuta los 4 defectos en v1.0 y muestra el daño en **Listado** (duplicados, campos vacíos, correos inválidos). Al pulsar `v2.0 · Corregida`, la aplicación **depura automáticamente los duplicados** que dejó la v1.0: aparece el aviso verde «Base de datos depurada (corrección de DEF01)», la pestaña **Listado** se abre sola y queda un solo registro por identificación (se conserva el original). Los campos vacíos y correos inválidos de la v1.0 permanecen como evidencia del daño; para limpiarlos por completo usa `npm run db:reset` y luego ejecuta la **regresión completa** (los 12 CP de la tabla siguiente) para demostrar que todo pasó.
+
+### Los 12 casos de prueba en la v2.0 (regresión)
 
 | CP | Pestaña | Datos de entrada | Resultado esperado (v2.0) |
 |---|---|---|---|
-| **CP01** ✅ | Registrar | Id: `102034`, Ana Sofía Díaz, `ana.diaz@example.com`, Ing. Industrial | Mensaje verde "registrado correctamente" y aparece en Listado |
+| **CP01** ✅ | Registrar | Id: `102034`, Daniela Ortega, `daniela.ortega@example.com`, Ing. Industrial | Mensaje verde "registrado correctamente" y aparece en Listado |
 | **CP02** ❌ | Registrar | Todos los campos vacíos → Registrar | Mensaje de error: faltan campos obligatorios |
 | **CP03** ❌ | Registrar | Id: `102030` (ya existe, Laura Gómez) con otros datos | Error: "ya existe un estudiante con la identificación 102030" |
 | **CP04** ❌ | Registrar | Id: `102035`, correo `ana.diazexample.com` (sin @) | Error: "el correo no tiene un formato válido" |
@@ -116,18 +132,30 @@ Estos son los 12 casos de la matriz (`02_Matriz_Casos_de_Prueba.xlsx`), con los 
 | **CP06** ✅ | Consultar | Id: `102030` | Se muestran los datos de Laura Gómez |
 | **CP07** ❌ | Consultar | Id: `999999` (no existe) | Mensaje informativo "No se encontró…" (**no** un error 500) |
 | **CP08** ✅ | Actualizar | Id: `102031` → cargar → cambiar programa a "Ingeniería Industrial" | Actualización exitosa, el Listado refleja el cambio |
-| **CP09** ❌ | Actualizar | Id: `102032` → cargar → borrar el nombre → Actualizar | Error: los campos obligatorios no pueden quedar vacíos |
+| **CP09** ❌ | Actualizar | Id: `102032` → cargar → borrar el nombre → Guardar | Error: los campos obligatorios no pueden quedar vacíos |
 | **CP10** ❌ | Registrar | Id y nombre con solo espacios: `"   "` | Error: los campos no pueden contener solo espacios |
 | **CP11** ✅ | Todas | Ejecutar operaciones válidas e inválidas | Mensajes claros de confirmación y de error |
-| **CP12** ❌ | Actualizar | Id: `102030` con el estado duplicado de la v1.0 (ver mockups) | En v2.0 ya no puede existir el duplicado (DEF01 corregido) |
+| **CP12** ❌ | Actualizar | Id: `102030` tras crear el duplicado con la v1.0 | En v2.0 los duplicados se depuran al activar la versión (DEF01 corregido), así que la actualización es inequívoca |
 
 > 💡 Si ejecutaste CP01 con el id 102034 y quieres repetir la ronda completa desde cero, usa antes `npm run db:reset`.
 
-### 🐞 Mockups de la versión 1.0 (con los 4 defectos)
+### 📍 Dónde están los cambios (código)
 
-Para **mostrar cómo se veía la v1.0 defectuosa** en la demo, el paquete incluye 4 simulaciones HTML (no requieren servidor, funcionan con doble clic o desde la app):
+Para mostrar **qué se cambió** entre versiones, abre estos archivos en VS Code — cada corrección está marcada con comentarios `v1.0 — DEF0X` y `v2.0 — corrección`:
 
-Con la app corriendo, visita:
+| Defecto | Archivo con la corrección | Cambio implementado |
+|---|---|---|
+| DEF01 (duplicados) | `src/app/api/estudiantes/route.ts` | La v2.0 verifica con `findFirst` que la identificación no exista antes de registrar (RF03) |
+| DEF01 (depuración) | `src/app/api/estudiantes/depurar/route.ts` | Al activar la v2.0, la interfaz llama a este endpoint: elimina los duplicados existentes conservando el registro original de cada identificación |
+| DEF02 (correo inválido) | `src/lib/validaciones.ts` | La expresión regular `EXPRESION_CORREO` valida el formato texto@dominio.ext (RF04) |
+| DEF03 (error 500) | `src/app/api/estudiantes/[identificacion]/route.ts` | La v2.0 responde 404 con mensaje informativo en lugar de dejar escapar el error (RF05/RF07) |
+| DEF04 (campos vacíos) | `src/app/api/estudiantes/[identificacion]/route.ts` | La v2.0 valida los campos obligatorios antes de actualizar y conserva los datos (RF06) |
+
+El conmutador funciona con la cabecera HTTP `x-sire-version` que la interfaz envía en cada petición (`src/app/page.tsx`), y las rutas deciden el comportamiento con `src/lib/version.ts`. Al pasar a la v2.0, la interfaz llama además a `POST /api/estudiantes/depurar`, que elimina los duplicados heredados de la v1.0 conservando el registro original. En `prisma/schema.prisma` la identificación no tiene restricción única a propósito: la unicidad se garantiza en la capa de aplicación, que es la corrección documentada, y así la v1.0 puede duplicar de verdad como en la ronda original.
+
+### 🐞 Mockups estáticos de la versión 1.0 (alternativa)
+
+El paquete también incluye las 4 simulaciones HTML de la v1.0 (útiles como captura congelada, sin necesidad de ejecutar los defectos en vivo):
 
 - <http://localhost:3000/mockups-v1/def01_identificacion_duplicada.html> — DEF01 (Alta)
 - <http://localhost:3000/mockups-v1/def02_correo_invalido_aceptado.html> — DEF02 (Media)
@@ -169,11 +197,12 @@ sire-prototipo/
 │   │   ├── page.tsx           ← Interfaz SIRE (4 pestañas)
 │   │   ├── layout.tsx         ← Diseño global
 │   │   ├── globals.css        ← Estilos (Tailwind CSS 4)
-│   │   └── api/estudiantes/   ← API REST (GET/POST lista, GET/PUT por id)
+│   │   └── api/estudiantes/   ← API REST (GET/POST lista, GET/PUT por id, POST depurar)
 │   ├── components/ui/         ← Componentes de interfaz (shadcn/ui)
 │   └── lib/
 │       ├── db.ts              ← Cliente Prisma
-│       └── validaciones.ts    ← Reglas RF02, RF03, RF04, RF07
+│       ├── validaciones.ts    ← Reglas RF02, RF03, RF04, RF07
+│       └── version.ts         ← Conmutador v1.0/v2.0 (cabecera x-sire-version)
 ├── .env                       ← Ruta de la base de datos
 ├── package.json               ← Dependencias y comandos
 └── tsconfig.json              ← Configuración TypeScript
@@ -196,7 +225,8 @@ sire-prototipo/
 
 ## 🧭 Nota sobre la narrativa del taller
 
-- La **v1.0** (con los defectos DEF01-DEF04) se representa con los **mockups HTML** de `public/mockups-v1/` y las capturas de la carpeta `evidencias/` del entregable.
-- Esta aplicación es la **v2.0 corregida**: los 12 casos de prueba de la regresión se ejecutan directamente sobre ella, tal como quedó registrado en la hoja *Ejecución* de la matriz.
+- La **v1.0 con defectos** ya no es solo un mockup: la propia aplicación la reproduce en vivo con el conmutador del encabezado (cabecera `x-sire-version`), con los 4 defectos implementados de verdad: duplicados persistidos en la base de datos, correos inválidos almacenados, error 500 TypeError en consultas inexistentes y pérdida de datos en actualizaciones vacías.
+- La **v2.0 corregida** es la misma aplicación con las validaciones activas: sobre ella se ejecutó la regresión de los 12 casos registrada en la hoja *Ejecución* de la matriz (`02_Matriz_Casos_de_Prueba.xlsx`).
+- Los **mockups HTML** de `public/mockups-v1/` y las capturas de `evidencias/` del entregable complementan la demo como evidencia estática.
 
 ¡Con esto tienes el proyecto corriendo al 100 % en VS Code! 🎉

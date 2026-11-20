@@ -34,11 +34,15 @@ const ESTUDIANTES = [
 
 async function main() {
   for (const e of ESTUDIANTES) {
-    await prisma.estudiante.upsert({
+    // La identificación no es única en la base de datos (la unicidad se
+    // garantiza en la capa de aplicación, corrección de DEF01 en v2.0),
+    // por eso se busca con findFirst antes de insertar.
+    const existente = await prisma.estudiante.findFirst({
       where: { identificacion: e.identificacion },
-      update: {},
-      create: e,
     })
+    if (!existente) {
+      await prisma.estudiante.create({ data: e })
+    }
   }
   const total = await prisma.estudiante.count()
   console.log(`Semilla completada. Estudiantes en la base de datos: ${total}`)

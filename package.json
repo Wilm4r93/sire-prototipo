@@ -2,7 +2,7 @@
   "name": "sire-prototipo",
   "version": "2.0.0",
   "private": true,
-  "description": "SIRE — Sistema de Registro de Estudiantes. Prototipo funcional v2.0 (sin defectos) del taller de Ingeniería de Software II.",
+  "description": "SIRE — Sistema de Registro de Estudiantes. Prototipo conmutable: v1.0 (con los defectos DEF01-DEF04) y v2.0 (corregida) para la demo del taller de Ingeniería de Software II.",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",

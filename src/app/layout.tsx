@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "Prototipo académico para el taller de Implementación del Plan de Pruebas de Software (Ingeniería de Software II): registro, consulta y actualización de estudiantes con validaciones.",
   keywords: ["registro de estudiantes", "plan de pruebas", "casos de prueba", "ingeniería de software"],
   icons: {
-    icon: "/logo.svg",
+    icon: "logo.svg",
   },
 };
 
